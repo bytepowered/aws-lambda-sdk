@@ -11,7 +11,7 @@ type HandleFunc func(ctx context.Context, request events.APIGatewayV2HTTPRequest
 type MiddlewareFunc func(handler HandleFunc) HandleFunc
 
 func HeaderAuthorization(request *events.APIGatewayV2HTTPRequest) string {
-    bearer, ok := request.Headers["Authorization"]
+    bearer, ok := request.Headers["authorization"]
     if !ok {
         return ""
     }
