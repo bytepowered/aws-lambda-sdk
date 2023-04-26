@@ -5,7 +5,7 @@ import (
     "log"
 )
 
-func setupEnv() {
+func SetupEnv() {
     const path = "/opt/.env"
     if err := godotenv.Load(path); err != nil {
         log.Fatalf("ERROR: env not found: %s", path)
