@@ -13,7 +13,7 @@ func SetupEnv() {
     const dirpath = "/opt"
     err := fs.WalkDir(os.DirFS(dirpath), ".", func(fpath string, d fs.DirEntry, err error) error {
         if err != nil {
-            log.Printf("ERROR: walk env file error, path: %s, error: %s", fpath, err)
+            log.Printf("WARN: on env file, path: %s, error: %s", fpath, err)
             return nil
         }
         if d.IsDir() {
@@ -32,6 +32,6 @@ func SetupEnv() {
         return nil
     })
     if err != nil {
-        log.Fatalf("ERROR: walk env file dir: %s, error: %s", dirpath, err)
+        log.Fatalf("ERROR: walk env dir: %s, error: %s", dirpath, err)
     }
 }
