@@ -6,6 +6,7 @@ import (
     "log"
     "os"
     "path"
+    "strconv"
     "strings"
 )
 
@@ -33,5 +34,25 @@ func SetupEnv() {
     })
     if err != nil {
         log.Fatalf("ERROR: walk env dir: %s, error: %s", dirpath, err)
+    }
+}
+
+func RequiredEnv(key string) string {
+    v := os.Getenv(key)
+    if v == "" {
+        panic("Load env NOT-FOUND, key: " + key)
+    }
+    return v
+}
+
+func RequiredIntEnv(key string, def int) int {
+    str := RequiredEnv(key)
+    if str == "" {
+        return def
+    }
+    if v, err := strconv.Atoi(str); err != nil {
+        return def
+    } else {
+        return v
     }
 }
