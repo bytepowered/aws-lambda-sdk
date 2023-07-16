@@ -29,3 +29,11 @@ func SendOK(data any) (*events.APIGatewayV2HTTPResponse, error) {
 func SendERR(error string, statusCode int) (*events.APIGatewayV2HTTPResponse, error) {
 	return SendJSON(map[string]string{"error": error}, statusCode)
 }
+
+func SendInvalidToken() (*events.APIGatewayV2HTTPResponse, error) {
+	return SendERR("Verify: invalid token", 401)
+}
+
+func SendInvalidArgs(name string) (*events.APIGatewayV2HTTPResponse, error) {
+	return SendERR("Verify: invalid argument: "+name, 400)
+}
