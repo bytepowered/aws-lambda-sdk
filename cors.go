@@ -1,25 +1,24 @@
-package filter
+package lambda
 
 import (
 	"context"
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/bytepowered/aws-lambda-sdk"
 )
 
 func CORSAllowHeaders(req events.APIGatewayV2HTTPRequest) map[string]string {
 	return map[string]string{
-		"Access-Control-Allow-Origin":      lambda.HeaderLookup(req.Headers, "access-control-allow-methods", "*"),
+		"Access-Control-Allow-Origin":      HeaderLookup(req.Headers, "access-control-allow-methods", "*"),
 		"Access-Control-Allow-Credentials": "true",
-		"Access-Control-Allow-Methods":     lambda.HeaderLookup(req.Headers, "access-control-allow-methods", "GET,POST,PUT,DELETE,OPTIONS"),
-		"Access-Control-Allow-Headers":     lambda.HeaderLookup(req.Headers, "access-control-allow-origin", "*"),
+		"Access-Control-Allow-Methods":     HeaderLookup(req.Headers, "access-control-allow-methods", "GET,POST,PUT,DELETE,OPTIONS"),
+		"Access-Control-Allow-Headers":     HeaderLookup(req.Headers, "access-control-allow-origin", "*"),
 	}
 }
 
-func CORSFilter(next lambda.HandleFunc) lambda.HandleFunc {
+func CORSFilter(next HandleFunc) HandleFunc {
 	return UseCORS(next)
 }
 
-func UseCORS(next lambda.HandleFunc) lambda.HandleFunc {
+func UseCORS(next HandleFunc) HandleFunc {
 	return func(ctx context.Context, req events.APIGatewayV2HTTPRequest) (*events.APIGatewayV2HTTPResponse, error) {
 		resp, err := next(ctx, req)
 		if err != nil {
