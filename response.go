@@ -5,7 +5,29 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
+	"io"
+	"net/http"
 )
+
+func CheckResponse(statusCode int, body io.ReadCloser) (int, error) {
+	if !(200 <= statusCode && statusCode < 300) {
+		data, _ := io.ReadAll(body)
+		return statusCode, fmt.Errorf("http response status not ok, status: %d, body: %s", statusCode, string(data))
+	}
+	return statusCode, nil
+}
+
+func SerializeResponse(statusCode int, body io.ReadCloser, outptr any) (int, error) {
+	data, err := io.ReadAll(body)
+	if err != nil {
+		return http.StatusInternalServerError, fmt.Errorf("http response read error: %w", err)
+	}
+	err = json.Unmarshal(data, outptr)
+	if err != nil {
+		return http.StatusInternalServerError, fmt.Errorf("http response unmarshal error: %w, data: %s", err, string(data))
+	}
+	return statusCode, nil
+}
 
 func SendJSON(object any, statusCode int) (*events.APIGatewayV2HTTPResponse, error) {
 	bytes, err := json.Marshal(object)
