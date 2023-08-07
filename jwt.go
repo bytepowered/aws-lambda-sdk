@@ -20,8 +20,8 @@ const (
 	ctxKeyJwtClaims = "@internal.aws.lambda.sdk.jwt.claims"
 )
 
-// JWTSign 生成JWT字符串
-func JWTSign(sub string, id string) (string, error) {
+// JWTSigned 生成JWT字符串
+func JWTSigned(sub string, id string) (string, error) {
 	expsec := RequiredIntEnv(JwtEnvExpsec, 7*24*3600)
 	now := time.Now()
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
@@ -60,8 +60,8 @@ func JWTFilter(next HandleFunc) HandleFunc {
 	return func(ctx context.Context, req events.APIGatewayV2HTTPRequest) (*events.APIGatewayV2HTTPResponse, error) {
 		str := HeaderAuthorization(&req)
 		if !CheckNotEmpty(str) {
-			log.Println("ERROR: jwt token not found")
-			return SendInvalidArgs("authorization")
+			log.Println("ERROR: jwt token not found in header")
+			return SendInvalidToken()
 		}
 		token, err := JWTParse(str)
 		if err != nil {
@@ -74,6 +74,22 @@ func JWTFilter(next HandleFunc) HandleFunc {
 
 func JWTLoadClaims(ctx context.Context) (claims jwt.Claims, ok bool) {
 	value := ctx.Value(ctxKeyJwtClaims)
+	if value == nil {
+		return nil, false
+	}
 	claims, ok = value.(jwt.Claims)
 	return
+}
+
+func JWTLoadSubject(ctx context.Context) (sub string, ok bool) {
+	claims, ok := JWTLoadClaims(ctx)
+	if !ok {
+		return "", false
+	}
+
+	if v, err := claims.GetSubject(); err != nil {
+		return "", false
+	} else {
+		return v, true
+	}
 }
