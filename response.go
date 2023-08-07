@@ -53,9 +53,9 @@ func SendERR(error string, statusCode int) (*events.APIGatewayV2HTTPResponse, er
 }
 
 func SendInvalidToken() (*events.APIGatewayV2HTTPResponse, error) {
-	return SendERR("Verify: invalid token", 401)
+	return SendERR("ERR-INVALID-TOKEN", 401)
 }
 
 func SendInvalidArgs(name string) (*events.APIGatewayV2HTTPResponse, error) {
-	return SendERR("Verify: invalid argument: "+name, 400)
+	return SendERR("ERR-INVALID-ARG: "+name, 400)
 }
