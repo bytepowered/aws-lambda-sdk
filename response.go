@@ -59,3 +59,7 @@ func SendInvalidToken() (*events.APIGatewayV2HTTPResponse, error) {
 func SendInvalidArgs(name string) (*events.APIGatewayV2HTTPResponse, error) {
 	return SendERR("ERR-INVALID-ARG: "+name, 400)
 }
+
+func SendRemoteServer(status int) (*events.APIGatewayV2HTTPResponse, error) {
+	return SendERR("ERR-REMOTE-SERVER", status)
+}
