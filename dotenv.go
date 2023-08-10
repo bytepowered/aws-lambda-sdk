@@ -20,7 +20,7 @@ func SetupEnv() {
         if d.IsDir() {
             return nil
         }
-        if !strings.HasPrefix(fpath, ".env") {
+        if !(strings.HasPrefix(fpath, ".env") || strings.HasSuffix(fpath, ".env")) {
             return nil
         }
         // path: .env, .env-nft
