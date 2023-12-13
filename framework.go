@@ -11,9 +11,17 @@ type HandleFunc func(ctx context.Context, request events.APIGatewayV2HTTPRequest
 type MiddlewareFunc func(handler HandleFunc) HandleFunc
 
 func Start(handler HandleFunc) {
+	aws.Start(handler)
+}
+
+func StartCORS(handler HandleFunc) {
 	aws.StartWithOptions(UseCORS(handler))
 }
 
 func StartWithJWT(handler HandleFunc) {
+	aws.StartWithOptions(JWTFilter(handler))
+}
+
+func StartWithCORSJWT(handler HandleFunc) {
 	aws.StartWithOptions(UseCORS(JWTFilter(handler)))
 }

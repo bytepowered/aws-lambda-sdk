@@ -81,14 +81,14 @@ func JWTLoadClaims(ctx context.Context) (claims jwt.Claims, ok bool) {
 	return
 }
 
-func JWTLoadSubject(ctx context.Context) (sub string, ok bool) {
-	claims, ok := JWTLoadClaims(ctx)
+func JWTLoadSubject(ctx context.Context) (sub string, claims jwt.Claims, ok bool) {
+	claims, ok = JWTLoadClaims(ctx)
 	if !ok {
-		return "", false
+		return "", claims, false
 	}
 	if v, err := claims.GetSubject(); err != nil {
-		return "", false
+		return "", claims, false
 	} else {
-		return v, true
+		return v, claims, true
 	}
 }

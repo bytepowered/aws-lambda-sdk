@@ -45,6 +45,14 @@ func RequiredEnv(key string) string {
 	return v
 }
 
+func RequiredStrEnv(key string, def string) string {
+	v := os.Getenv(key)
+	if v == "" {
+		return def
+	}
+	return v
+}
+
 func RequiredIntEnv(key string, def int) int {
 	str := RequiredEnv(key)
 	if str == "" {
