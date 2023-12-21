@@ -5,12 +5,12 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 )
 
-func CORSAllowHeaders(req events.APIGatewayV2HTTPRequest) map[string]string {
+func CORSAllowHeaders(request events.APIGatewayV2HTTPRequest) map[string]string {
 	return map[string]string{
-		"Access-Control-Allow-Origin":      HeaderLookup(req.Headers, "access-control-allow-methods", "*"),
+		"Access-Control-Allow-Origin":      GetHeaderParam(&request, "access-control-allow-methods", "*"),
 		"Access-Control-Allow-Credentials": "true",
-		"Access-Control-Allow-Methods":     HeaderLookup(req.Headers, "access-control-allow-methods", "GET,POST,PUT,DELETE,OPTIONS"),
-		"Access-Control-Allow-Headers":     HeaderLookup(req.Headers, "access-control-allow-origin", "*"),
+		"Access-Control-Allow-Methods":     GetHeaderParam(&request, "access-control-allow-methods", "GET,POST,PUT,DELETE,OPTIONS"),
+		"Access-Control-Allow-Headers":     GetHeaderParam(&request, "access-control-allow-origin", "*"),
 	}
 }
 

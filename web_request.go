@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-func HeaderAuthorization(request *events.APIGatewayV2HTTPRequest) string {
-	bearer := HeaderLookup(request.Headers, "authorization", "")
+func GetHeaderAuthorization(request *events.APIGatewayV2HTTPRequest) string {
+	bearer := GetKV(request.Headers, "authorization", "")
 	if bearer == "" {
 		return bearer
 	}
@@ -19,16 +19,29 @@ func HeaderAuthorization(request *events.APIGatewayV2HTTPRequest) string {
 	return ""
 }
 
-func HeaderLookup(headers map[string]string, name string, defaults string) string {
-	if headers == nil || len(headers) == 0 {
-		return defaults
+func GetHeaderParam(request *events.APIGatewayV2HTTPRequest, name string, defaultValue string) string {
+	return GetKV(request.Headers, name, defaultValue)
+}
+
+func GetQueryParam(request *events.APIGatewayV2HTTPRequest, name string, defaultValue string) string {
+	return GetKV(request.QueryStringParameters, name, defaultValue)
+}
+
+func GetPathParam(request *events.APIGatewayV2HTTPRequest, name string, defaultValue string) string {
+	return GetKV(request.PathParameters, name, defaultValue)
+}
+
+func GetKV(kvMap map[string]string, name string, defaultValue string) string {
+	if kvMap == nil || len(kvMap) == 0 {
+		return defaultValue
 	}
-	for k, v := range headers {
-		if strings.ToLower(name) == strings.ToLower(k) {
+	lowerName := strings.ToLower(name)
+	for k, v := range kvMap {
+		if lowerName == strings.ToLower(k) {
 			return v
 		}
 	}
-	return defaults
+	return defaultValue
 }
 
 func ParseBody(data string, isBase64 bool, outptr any) (err error) {

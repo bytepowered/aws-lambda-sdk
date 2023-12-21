@@ -58,7 +58,7 @@ func JWTParse(tokenStr string) (*jwt.Token, error) {
 
 func JWTFilter(next HandleFunc) HandleFunc {
 	return func(ctx context.Context, req events.APIGatewayV2HTTPRequest) (*events.APIGatewayV2HTTPResponse, error) {
-		str := HeaderAuthorization(&req)
+		str := GetHeaderAuthorization(&req)
 		if !CheckNotEmpty(str) {
 			log.Println("ERROR: jwt token not found in header")
 			return SendInvalidToken()
